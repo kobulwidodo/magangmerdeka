@@ -6,35 +6,39 @@ import moment from "moment/moment";
 const Magang = () => {
   const [magangs, setMagangs] = useState([]);
   const [limit, setLimit] = useState(12);
-  const [position, setPosition] = useState("");
-  const [location, setLocation] = useState("");
-  const [mitra, setMitra] = useState("");
+  const [keyPosition, setKeyPosition] = useState("");
+  const [keyLocation, setKeyLocation] = useState("");
+  const [keyMitra, setKeyMitra] = useState("");
   const [total, setTotal] = useState(0);
 
   const fetchMagang = async () => {
     try {
       const res = await getMagang();
       let dataMagang = res.data.data;
-      setTotal(res.data.meta.total);
       setMagangs(dataMagang);
-      if (position.length > 0) {
+      if (keyPosition.length > 0) {
         dataMagang = dataMagang.filter(function (magang) {
-          return magang.name.toLowerCase().includes(position.toLowerCase());
+          return magang.name.toLowerCase().includes(keyPosition.toLowerCase());
         });
         setMagangs(dataMagang);
       }
-      if (location.length > 0) {
+      if (keyLocation.length > 0) {
         dataMagang = dataMagang.filter(function (magang) {
-          return magang.location.toLowerCase().includes(location.toLowerCase());
+          return magang.location
+            .toLowerCase()
+            .includes(keyLocation.toLowerCase());
         });
         setMagangs(dataMagang);
       }
-      if (mitra.length > 0) {
+      if (keyMitra.length > 0) {
         dataMagang = dataMagang.filter(function (magang) {
-          return magang.mitra_name.toLowerCase().includes(mitra.toLowerCase());
+          return magang.mitra_name
+            .toLowerCase()
+            .includes(keyMitra.toLowerCase());
         });
         setMagangs(dataMagang);
       }
+      setTotal(dataMagang.length);
     } catch (error) {}
   };
 
@@ -45,7 +49,7 @@ const Magang = () => {
   useEffect(() => {
     fetchMagang();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [position, mitra, location]);
+  }, [keyPosition, keyMitra, keyLocation]);
 
   return (
     <>
@@ -68,26 +72,27 @@ const Magang = () => {
             name="position"
             placeholder="Cari bedasarkan posisi"
             className="text-[#211B3D] font-medium w-full px-7 py-2 border rounded-full mb-5 sm:mb-0"
-            onChange={(e) => setPosition(e.target.value)}
+            onChange={(e) => setKeyPosition(e.target.value)}
           />
           <input
             type="text"
             name="location"
             placeholder="Cari bedasarkan lokasi"
             className="text-[#211B3D] font-medium w-full px-7 py-2 border rounded-full mb-5 sm:mb-0"
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e) => setKeyLocation(e.target.value)}
           />
           <input
             type="text"
             name="mitra"
             placeholder="Cari bedasarkan mitra"
             className="text-[#211B3D] font-medium w-full px-7 py-2 border rounded-full"
-            onChange={(e) => setMitra(e.target.value)}
+            onChange={(e) => setKeyMitra(e.target.value)}
           />
         </div>
         <div className="grid md:grid-cols-3 grid-cols-1 sm:grid-cols-2 mt-10 gap-6">
           {magangs.slice(0, limit).map((magangs, index) => (
             <a
+              key={index}
               href={`https://kampusmerdeka.kemdikbud.go.id/program/magang/browse/${magangs.mitra_id}/${magangs.id}`}
               target="__blank"
               className="bg-[#FAFAFA] rounded-2xl py-6 px-5 shadow-sm"

@@ -15,7 +15,6 @@ const Studi = () => {
     try {
       const res = await getStudpen();
       let dataMagang = res.data.data;
-      setTotal(res.data.meta.total);
       setMagangs(dataMagang);
       if (position.length > 0) {
         dataMagang = dataMagang.filter(function (magang) {
@@ -35,6 +34,7 @@ const Studi = () => {
         });
         setMagangs(dataMagang);
       }
+      setTotal(dataMagang.length);
     } catch (error) {}
   };
 
