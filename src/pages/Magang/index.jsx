@@ -56,7 +56,6 @@ const Magang = () => {
 
   return (
     <>
-      <Navbar />
       <div className="max-w-7xl mx-auto py-14 px-4">
         <p className="text-[#31B380] text-center font-semibold mb-3">
           Kampus Merdeka

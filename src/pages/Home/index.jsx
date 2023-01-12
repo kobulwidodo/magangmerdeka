@@ -7,7 +7,6 @@ import { ButtonMain } from '../../components/Button/ButtonMain';
 const Home = () => {
   return (
     <>
-      <Navbar />
       <div className="max-w-7xl mx-auto py-20 px-4 flex flex-row">
         <div className="flex-1">
           <p className="font-semibold text-[#31B380] text-center md:text-start">
