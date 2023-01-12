@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar";
-import { getMagang } from "../../api/model/magang";
-import moment from "moment/moment";
+import React, { useEffect, useState } from 'react';
+import Navbar from '../../components/Navbar';
+import { getMagang } from '../../api/model/magang';
+import moment from 'moment/moment';
+import { ButtonMain } from '../../components/Button/ButtonMain';
+import { addDoc, collection, doc } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseApp';
 
 const Magang = () => {
   const [magangs, setMagangs] = useState([]);
   const [limit, setLimit] = useState(12);
-  const [keyPosition, setKeyPosition] = useState("");
-  const [keyLocation, setKeyLocation] = useState("");
-  const [keyMitra, setKeyMitra] = useState("");
+  const [keyPosition, setKeyPosition] = useState('');
+  const [keyLocation, setKeyLocation] = useState('');
+  const [keyMitra, setKeyMitra] = useState('');
   const [total, setTotal] = useState(0);
 
   const fetchMagang = async () => {
@@ -91,32 +94,54 @@ const Magang = () => {
         </div>
         <div className="grid md:grid-cols-3 grid-cols-1 sm:grid-cols-2 mt-10 gap-6">
           {magangs.slice(0, limit).map((magangs, index) => (
-            <a
+            <div
               key={index}
-              href={`https://kampusmerdeka.kemdikbud.go.id/program/magang/browse/${magangs.mitra_id}/${magangs.id}`}
-              target="__blank"
-              className="bg-[#FAFAFA] rounded-2xl py-6 px-5 shadow-sm"
+              className="bg-[#FAFAFA] rounded-2xl py-6 px-5 shadow-lg flex flex-col "
             >
-              <img
-                src={magangs.logo}
-                className="mx-auto mt-5 max-h-[88px]"
-                alt=""
-              />
-              <h1 className="text-[#433a63] font-medium text-lg mt-7">
-                {magangs.name}
-              </h1>
-              <p className="text-[#2E405C] mt-1">{magangs.mitra_name}</p>
-              <p className="text-[#2E405C] mt-1">{magangs.location}</p>
-              <p className="text-[#2E405C] mt-1">
-                {moment(magangs.start_duration).format("ll")} -{" "}
-                {moment(magangs.end_duration).format("ll")}
-              </p>
-              <hr className="my-5" />
-              <div className="flex justify-between">
-                <p className="text-[#2E405C] mt-1">{magangs.total} Kuota</p>
-                <p className="text-[#2E405C] mt-1">{magangs.activity_type}</p>
+              <a
+                href={`https://kampusmerdeka.kemdikbud.go.id/program/magang/browse/${magangs.mitra_id}/${magangs.id}`}
+                target="__blank"
+              >
+                <img
+                  src={magangs.logo}
+                  className="mx-auto mt-5 max-h-[88px]"
+                  alt=""
+                />
+                <h1 className="text-[#433a63] font-medium text-lg mt-7">
+                  {magangs.name}
+                </h1>
+                <p className="text-[#2E405C] mt-1">{magangs.mitra_name}</p>
+                <p className="text-[#2E405C] mt-1">{magangs.location}</p>
+                <p className="text-[#2E405C] mt-1">
+                  {moment(magangs.start_duration).format('ll')} -{' '}
+                  {moment(magangs.end_duration).format('ll')}
+                </p>
+                <hr className="my-5" />
+                <div className="flex justify-between">
+                  <p className="text-[#2E405C] mt-1">{magangs.total} Kuota</p>
+                  <p className="text-[#2E405C] mt-1">{magangs.activity_type}</p>
+                </div>
+              </a>
+              <div className="mt-auto">
+                <p
+                  onClick={() => {
+                    console.log('hi');
+                  }}
+                  className="text-[#2E405C] text-xs text-center mt-auto font-semibold cursor-pointer"
+                >
+                  Kemungkinan Diterima:{' '}
+                  <span className="text-red-600">???</span>
+                </p>
+                <div className="flex justify-center">
+                  <ButtonMain
+                    onClick={() => daftar(magangs.id)}
+                    className="w-full rounded-md my-auto mt-3"
+                  >
+                    Daftar
+                  </ButtonMain>
+                </div>
               </div>
-            </a>
+            </div>
           ))}
         </div>
         <div className="flex justify-center mt-10">
@@ -130,6 +155,19 @@ const Magang = () => {
       </div>
     </>
   );
+};
+
+const daftar = async (id) => {
+  try {
+    const docRef = await addDoc(collection(db, 'pendaftar-magang'), {
+      uid: 'akdsjfasl',
+      magang: doc(db, 'magang', id),
+    });
+
+    console.log('Document written with ID: ', docRef.id);
+  } catch (e) {
+    console.error('Error adding document: ', e);
+  }
 };
 
 export default Magang;
