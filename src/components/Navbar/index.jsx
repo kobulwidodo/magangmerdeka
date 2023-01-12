@@ -137,7 +137,7 @@ const Navbar = () => {
                     onClick={() => {
                       signOut(auth);
                     }}
-                    className="rounded-full"
+                    className="rounded-full bg-slate-100 w-14"
                     alt="profile"
                     src={user.avatar}
                   />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ButtonMain } from '../../components/Button/ButtonMain';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth, googleProvider } from '../../firebase/firebaseApp';
 import {
   createUserWithEmailAndPassword,
@@ -13,6 +13,7 @@ export const Authentication = () => {
   const [input, setInput] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [authState, setAuthState] = useState('register');
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -23,7 +24,7 @@ export const Authentication = () => {
           // Signed in
           const user = userCredential.user;
           setLoading(false);
-          console.log(user);
+          navigate('/');
         })
         .catch((error) => {
           const errorMessage = error.message;
@@ -36,7 +37,7 @@ export const Authentication = () => {
           // Signed in
           const user = userCredential.user;
           setLoading(false);
-          console.log(user);
+          navigate('/');
         })
         .catch((error) => {
           const errorMessage = error.message;
@@ -122,6 +123,7 @@ export const Authentication = () => {
                     // The signed-in user info.
                     setLoading(false);
                     const user = result.user;
+                    navigate('/');
                   })
                   .catch((error) => {
                     // Handle Errors here.

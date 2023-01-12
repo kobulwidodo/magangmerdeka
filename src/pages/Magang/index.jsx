@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import { getMagang } from '../../api/model/magang';
 import moment from 'moment/moment';
@@ -6,6 +6,7 @@ import { ButtonMain } from '../../components/Button/ButtonMain';
 import { addDoc, collection, doc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseApp';
 import { AnimatePresence, motion } from 'framer-motion';
+import { UserContext } from '../../context/UserContext';
 
 const Magang = () => {
   const [magangs, setMagangs] = useState([]);
@@ -15,6 +16,8 @@ const Magang = () => {
   const [keyMitra, setKeyMitra] = useState('');
   const [total, setTotal] = useState(0);
   const [selectedId, setSelectedId] = useState(null);
+
+  const user = useContext(UserContext);
 
   const fetchMagang = async () => {
     try {
@@ -97,7 +100,7 @@ const Magang = () => {
           {magangs.slice(0, limit).map((magangs, index) => (
             <motion.div
               key={index}
-              className="bg-[#FAFAFA] rounded-2xl py-6 px-5 shadow-lg flex flex-col "
+              className="bg-[#FAFAFA] rounded-2xl py-6 px-5 shadow-lg flex flex-col cursor-pointer"
               layoutId={index}
               onClick={() => setSelectedId(index)}
             >
@@ -121,32 +124,16 @@ const Magang = () => {
                 <p className="text-[#2E405C] mt-1">{magangs.activity_type}</p>
               </div>
               <div className="mt-auto">
-                <p
-                  onClick={() => {
-                    console.log('hi');
-                  }}
-                  className="text-[#2E405C] text-xs text-center mt-auto font-semibold cursor-pointer"
-                >
+                <p className="text-[#2E405C] text-xs text-center mt-auto font-semibold">
                   Kemungkinan Diterima:{' '}
-                  <span className="text-red-600">???</span>
+                  <span className="text-red-600">??%</span>
                 </p>
-                <div className="flex justify-center">
-                  <ButtonMain
-                    onClick={() => daftar(magangs.id)}
-                    className="w-full rounded-md my-auto mt-3"
-                  >
-                    Daftar
-                  </ButtonMain>
-                </div>
               </div>
             </motion.div>
           ))}
         </div>
         {selectedId && (
-          <div
-            onClick={() => setSelectedId(null)}
-            className="fixed h-full w-full left-0 top-0 bg-gray-800 bg-opacity-30 flex justify-center items-center"
-          >
+          <div className="fixed h-full w-full left-0 top-0 bg-gray-800 bg-opacity-30 flex justify-center items-center">
             <AnimatePresence>
               <motion.div
                 className="bg-[#FAFAFA] rounded-2xl py-6 px-5 shadow-lg flex flex-col w-[340px]"
@@ -187,17 +174,23 @@ const Magang = () => {
                 <div className="mt-auto">
                   <p
                     onClick={() => {
-                      console.log('hi');
+                      alert(
+                        'Mohon daftar terlebih dahulu untuk mendapatkan kemungkinan diterima'
+                      );
                     }}
                     className="text-[#2E405C] text-xs text-center mt-auto font-semibold cursor-pointer"
                   >
                     Kemungkinan Diterima:{' '}
-                    <span className="text-red-600">???</span>
+                    <span className="text-red-600">??%</span>
                   </p>
                   <div className="flex justify-center">
                     <ButtonMain
-                      onClick={() => daftar(magangs.id)}
-                      className="w-full rounded-md my-auto mt-3"
+                      onClick={() => {
+                        if (user !== null)
+                          daftar(user.uid, magangs[selectedId].id);
+                        else alert('mohon untuk masuk/login terlebih dahulu');
+                      }}
+                      className="w-full rounded-md my-auto mt-3 "
                     >
                       Daftar
                     </ButtonMain>
@@ -205,6 +198,10 @@ const Magang = () => {
                 </div>
               </motion.div>
             </AnimatePresence>
+            <div
+              onClick={() => setSelectedId(null)}
+              className="w-full h-full fixed left-0 top-0 -z-10"
+            ></div>
           </div>
         )}
 
@@ -221,10 +218,14 @@ const Magang = () => {
   );
 };
 
-const daftar = async (id) => {
+const daftar = async (uid, id) => {
   try {
+    if (uid === null) {
+      alert('dimohon untuk login terlebih dahulu');
+      return;
+    }
     const docRef = await addDoc(collection(db, 'pendaftar-magang'), {
-      uid: 'akdsjfasl',
+      uid: uid,
       magang: doc(db, 'magang', id),
     });
 
