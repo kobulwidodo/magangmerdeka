@@ -127,8 +127,8 @@ const Navbar = () => {
                 </Menu>
               </div>
               <div className="absolute right-0">
-                <Link to="/register">
-                  <ButtonMain className="rounded-full"> Register </ButtonMain>
+                <Link to="/daftar">
+                  <ButtonMain className="rounded-full"> Daftar </ButtonMain>
                 </Link>
               </div>
             </div>
