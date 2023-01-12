@@ -5,6 +5,7 @@ import moment from 'moment/moment';
 import { ButtonMain } from '../../components/Button/ButtonMain';
 import { addDoc, collection, doc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseApp';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Magang = () => {
   const [magangs, setMagangs] = useState([]);
@@ -13,6 +14,7 @@ const Magang = () => {
   const [keyLocation, setKeyLocation] = useState('');
   const [keyMitra, setKeyMitra] = useState('');
   const [total, setTotal] = useState(0);
+  const [selectedId, setSelectedId] = useState(null);
 
   const fetchMagang = async () => {
     try {
@@ -93,34 +95,31 @@ const Magang = () => {
         </div>
         <div className="grid md:grid-cols-3 grid-cols-1 sm:grid-cols-2 mt-10 gap-6">
           {magangs.slice(0, limit).map((magangs, index) => (
-            <div
+            <motion.div
               key={index}
               className="bg-[#FAFAFA] rounded-2xl py-6 px-5 shadow-lg flex flex-col "
+              layoutId={index}
+              onClick={() => setSelectedId(index)}
             >
-              <a
-                href={`https://kampusmerdeka.kemdikbud.go.id/program/magang/browse/${magangs.mitra_id}/${magangs.id}`}
-                target="__blank"
-              >
-                <img
-                  src={magangs.logo}
-                  className="mx-auto mt-5 max-h-[88px]"
-                  alt=""
-                />
-                <h1 className="text-[#433a63] font-medium text-lg mt-7">
-                  {magangs.name}
-                </h1>
-                <p className="text-[#2E405C] mt-1">{magangs.mitra_name}</p>
-                <p className="text-[#2E405C] mt-1">{magangs.location}</p>
-                <p className="text-[#2E405C] mt-1">
-                  {moment(magangs.start_duration).format('ll')} -{' '}
-                  {moment(magangs.end_duration).format('ll')}
-                </p>
-                <hr className="my-5" />
-                <div className="flex justify-between">
-                  <p className="text-[#2E405C] mt-1">{magangs.total} Kuota</p>
-                  <p className="text-[#2E405C] mt-1">{magangs.activity_type}</p>
-                </div>
-              </a>
+              <img
+                src={magangs.logo}
+                className="mx-auto mt-5 max-h-[88px]"
+                alt=""
+              />
+              <h1 className="text-[#433a63] font-medium text-lg mt-7">
+                {magangs.name}
+              </h1>
+              <p className="text-[#2E405C] mt-1">{magangs.mitra_name}</p>
+              <p className="text-[#2E405C] mt-1">{magangs.location}</p>
+              <p className="text-[#2E405C] mt-1">
+                {moment(magangs.start_duration).format('ll')} -{' '}
+                {moment(magangs.end_duration).format('ll')}
+              </p>
+              <hr className="my-5" />
+              <div className="flex justify-between">
+                <p className="text-[#2E405C] mt-1">{magangs.total} Kuota</p>
+                <p className="text-[#2E405C] mt-1">{magangs.activity_type}</p>
+              </div>
               <div className="mt-auto">
                 <p
                   onClick={() => {
@@ -140,9 +139,75 @@ const Magang = () => {
                   </ButtonMain>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
+        {selectedId && (
+          <div
+            onClick={() => setSelectedId(null)}
+            className="fixed h-full w-full left-0 top-0 bg-gray-800 bg-opacity-30 flex justify-center items-center"
+          >
+            <AnimatePresence>
+              <motion.div
+                className="bg-[#FAFAFA] rounded-2xl py-6 px-5 shadow-lg flex flex-col w-[340px]"
+                layoutId={selectedId}
+              >
+                <a
+                  href={`https://kampusmerdeka.kemdikbud.go.id/program/magang/browse/${magangs.mitra_id}/${magangs.id}`}
+                  target="__blank"
+                >
+                  <img
+                    src={magangs[selectedId].logo}
+                    className="mx-auto mt-5 max-h-[88px]"
+                    alt=""
+                  />
+                  <h1 className="text-[#433a63] font-medium text-lg mt-7">
+                    {magangs[selectedId].name}
+                  </h1>
+                  <p className="text-[#2E405C] mt-1">
+                    {magangs[selectedId].mitra_name}
+                  </p>
+                  <p className="text-[#2E405C] mt-1">
+                    {magangs[selectedId].location}
+                  </p>
+                  <p className="text-[#2E405C] mt-1">
+                    {moment(magangs[selectedId].start_duration).format('ll')} -{' '}
+                    {moment(magangs[selectedId].end_duration).format('ll')}
+                  </p>
+                  <hr className="my-5" />
+                  <div className="flex justify-between">
+                    <p className="text-[#2E405C] mt-1">
+                      {magangs[selectedId].total} Kuota
+                    </p>
+                    <p className="text-[#2E405C] mt-1">
+                      {magangs[selectedId].activity_type}
+                    </p>
+                  </div>
+                </a>
+                <div className="mt-auto">
+                  <p
+                    onClick={() => {
+                      console.log('hi');
+                    }}
+                    className="text-[#2E405C] text-xs text-center mt-auto font-semibold cursor-pointer"
+                  >
+                    Kemungkinan Diterima:{' '}
+                    <span className="text-red-600">???</span>
+                  </p>
+                  <div className="flex justify-center">
+                    <ButtonMain
+                      onClick={() => daftar(magangs.id)}
+                      className="w-full rounded-md my-auto mt-3"
+                    >
+                      Daftar
+                    </ButtonMain>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        )}
+
         <div className="flex justify-center mt-10">
           <button
             className="bg-gray-400 px-4 py-2 rounded-lg text-white"
