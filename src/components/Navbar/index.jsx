@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link, NavLink } from 'react-router-dom';
 import { ButtonMain } from '../Button/ButtonMain';
+import { auth } from '../../firebase/firebaseApp';
+import { UserContext } from '../../context/UserContext';
+import { createAvatar } from '@dicebear/core';
+import { micah } from '@dicebear/collection';
 
 const navigation = [
   { name: 'Home', to: '/', current: false },
@@ -16,6 +20,8 @@ function classNames(...classes) {
 }
 
 const Navbar = () => {
+  const user = useContext(UserContext);
+  console.log(user);
   return (
     <Disclosure as="nav" className="bg-white drop-shadow">
       {({ open }) => (
@@ -127,9 +133,13 @@ const Navbar = () => {
                 </Menu>
               </div>
               <div className="absolute right-0">
-                <Link to="/daftar">
-                  <ButtonMain className="rounded-full"> Daftar </ButtonMain>
-                </Link>
+                {user !== null ? (
+                  <img className='rounded-full' alt='profile' src={user.avatar} />
+                ) : (
+                  <Link to="/daftar">
+                    <ButtonMain className="rounded-full"> Daftar </ButtonMain>
+                  </Link>
+                )}
               </div>
             </div>
           </div>
