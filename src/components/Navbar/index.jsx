@@ -6,8 +6,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { ButtonMain } from '../Button/ButtonMain';
 import { auth } from '../../firebase/firebaseApp';
 import { UserContext } from '../../context/UserContext';
-import { createAvatar } from '@dicebear/core';
-import { micah } from '@dicebear/collection';
+import { signOut } from 'firebase/auth';
 
 const navigation = [
   { name: 'Home', to: '/', current: false },
@@ -134,7 +133,14 @@ const Navbar = () => {
               </div>
               <div className="absolute right-0">
                 {user !== null ? (
-                  <img className='rounded-full' alt='profile' src={user.avatar} />
+                  <img
+                    onClick={() => {
+                      signOut(auth);
+                    }}
+                    className="rounded-full"
+                    alt="profile"
+                    src={user.avatar}
+                  />
                 ) : (
                   <Link to="/daftar">
                     <ButtonMain className="rounded-full"> Daftar </ButtonMain>
