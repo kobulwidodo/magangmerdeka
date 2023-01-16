@@ -1,12 +1,12 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Navbar from "../../components/Navbar";
-import banner from "../../assets/images/banner.png";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Navbar from '../../components/Navbar';
+import banner from '../../assets/images/banner.png';
+import { ButtonMain } from '../../components/Button/ButtonMain';
 
 const Home = () => {
   return (
     <>
-      <Navbar />
       <div className="max-w-7xl mx-auto py-20 px-4 flex flex-row">
         <div className="flex-1">
           <p className="font-semibold text-[#31B380] text-center md:text-start">
@@ -22,17 +22,11 @@ const Home = () => {
             Disini bisa liat kuota magang dan studpen + live update cuy !
           </p>
           <div className="flex gap-x-5 justify-center md:justify-start">
-            <Link
-              to="/magang"
-              className="bg-[#7839F3] rounded-full text-white py-3 px-10 hover:bg-[#915aff]"
-            >
-              Magang
+            <Link to="/magang">
+              <ButtonMain className="rounded-full">Magang</ButtonMain>
             </Link>
-            <Link
-              to="/studi"
-              className="bg-[#7839F3] rounded-full text-white py-3 px-10 hover:bg-[#915aff]"
-            >
-              Studi
+            <Link to="/studi">
+              <ButtonMain className="rounded-full">Studi</ButtonMain>
             </Link>
           </div>
         </div>
@@ -42,7 +36,7 @@ const Home = () => {
       </div>
       <div className="max-w-7xl mx-auto py-5 px-4">
         <p className="text-center">
-          Created with love by KobulWidodo and PW Homebase
+          Created with love by KobulWidodo, Novel and PW Homebase
         </p>
       </div>
     </>
