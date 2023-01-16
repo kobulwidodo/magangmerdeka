@@ -21,13 +21,19 @@ const Magang = () => {
   const user = useContext(UserContext);
 
   const fetchPresentage = async () => {
-    const magang = magangs[selectedId];
-    const docRef = doc(db, 'magang', magang.id);
-    const docSnap = await getDoc(docRef);
-    const magangData = docSnap.data();
-    const pendaftar = magangData.pendaftar || 313;
-    if (user !== null) setPresentageData(((magangData.total / pendaftar) * 100).toFixed(2));
-    else setPresentageData(null);
+    try {
+      const magang = magangs[selectedId];
+      const docRef = doc(db, 'magang', magang.id);
+      const docSnap = await getDoc(docRef);
+      const magangData = docSnap.data();
+      const pendaftar = magangData.pendaftar || 313;
+      console.log(magangData.id, pendaftar);
+      if (user !== null)
+        setPresentageData(((magangData.total / pendaftar) * 100).toFixed(2));
+      else setPresentageData(null);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const fetchMagang = async () => {
