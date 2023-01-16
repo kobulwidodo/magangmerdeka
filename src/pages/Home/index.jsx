@@ -36,7 +36,7 @@ const Home = () => {
       </div>
       <div className="max-w-7xl mx-auto py-5 px-4">
         <p className="text-center">
-          Created with love by KobulWidodo and PW Homebase
+          Created with love by KobulWidodo, Novel and PW Homebase
         </p>
       </div>
     </>
