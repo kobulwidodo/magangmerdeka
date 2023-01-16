@@ -20,7 +20,6 @@ function classNames(...classes) {
 
 const Navbar = () => {
   const user = useContext(UserContext);
-  console.log(user);
   return (
     <Disclosure as="nav" className="bg-white drop-shadow">
       {({ open }) => (

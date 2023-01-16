@@ -3,7 +3,7 @@ import Navbar from '../../components/Navbar';
 import { getMagang } from '../../api/model/magang';
 import moment from 'moment/moment';
 import { ButtonMain } from '../../components/Button/ButtonMain';
-import { addDoc, collection, doc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseApp';
 import { AnimatePresence, motion } from 'framer-motion';
 import { UserContext } from '../../context/UserContext';
@@ -16,8 +16,19 @@ const Magang = () => {
   const [keyMitra, setKeyMitra] = useState('');
   const [total, setTotal] = useState(0);
   const [selectedId, setSelectedId] = useState(null);
+  const [presentageData, setPresentageData] = useState(null);
 
   const user = useContext(UserContext);
+
+  const fetchPresentage = async () => {
+    const magang = magangs[selectedId];
+    const docRef = doc(db, 'magang', magang.id);
+    const docSnap = await getDoc(docRef);
+    const magangData = docSnap.data();
+    const pendaftar = magangData.pendaftar || 313;
+    if (user !== null) setPresentageData(((magangData.total / pendaftar) * 100).toFixed(2));
+    else setPresentageData(null);
+  };
 
   const fetchMagang = async () => {
     try {
@@ -53,6 +64,10 @@ const Magang = () => {
   const handlerMore = () => {
     setLimit(limit + 12);
   };
+
+  useEffect(() => {
+    if (selectedId !== null) fetchPresentage();
+  }, [selectedId]);
 
   useEffect(() => {
     fetchMagang();
@@ -181,7 +196,11 @@ const Magang = () => {
                     className="text-[#2E405C] text-xs text-center mt-auto font-semibold cursor-pointer"
                   >
                     Kemungkinan Diterima:{' '}
-                    <span className="text-red-600">??%</span>
+                    {presentageData !== null ? (
+                      <span className="text-orange-600">{presentageData}%</span>
+                    ) : (
+                      <span className="text-red-600">??%</span>
+                    )}
                   </p>
                   <div className="flex justify-center">
                     <ButtonMain
